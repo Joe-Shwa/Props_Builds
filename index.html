@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Prop Tags">
+<meta name="theme-color" content="#1c1a17">
+<link rel="apple-touch-icon" href="prototagicon192.png">
+<link rel="icon" type="image/png" sizes="192x192" href="prototagicon192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="prototagicon512.png">
+<title>Prototyping Form</title>
+<style>
+:root {
+  --bg: #1c1a17;
+  --surface: #262320;
+  --surface2: #2e2a26;
+  --surface3: #383430;
+  --border: rgba(255,255,255,0.08);
+  --border2: rgba(255,255,255,0.14);
+  --text: #f2ede3;
+  --text2: #a89f91;
+  --text3: #6b6358;
+  --accent: #c14a3a;
+  --accent-bg: rgba(193,74,58,0.14);
+  --accent-border: rgba(193,74,58,0.35);
+  --teal: #4a7a71;
+  --teal-bg: rgba(74,122,113,0.14);
+  --paper: #f3eee2;
+  --ink: #2b2a26;
+  --radius: 10px;
+  --radius-lg: 16px;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:15px}
+#app{max-width:640px;margin:0 auto;padding-bottom:90px}
+
+.hidden{display:none !important}
+
+/* Header */
+.topbar{position:sticky;top:0;z-index:20;background:var(--bg);border-bottom:1px solid var(--border);padding:16px 18px;display:flex;align-items:center;justify-content:space-between}
+.topbar h1{font-family:'Futura','Trebuchet MS',sans-serif;font-size:19px;letter-spacing:0.04em;text-transform:uppercase;font-weight:700}
+.topbar .sub{font-size:11px;color:var(--text2);letter-spacing:0.03em;margin-top:2px;text-transform:none;font-family:-apple-system,sans-serif}
+.icon-btn{background:var(--surface2);border:1px solid var(--border2);color:var(--text);width:38px;height:38px;border-radius:50%;font-size:16px;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.icon-btn:active{background:var(--surface3)}
+.topbar-actions{display:flex;gap:8px}
+
+/* Setup screen */
+.setup-wrap{padding:20px 20px 40px;max-width:520px;margin:0 auto}
+.setup-hero{text-align:center;margin:24px 0 32px}
+.setup-hero .tagmark{width:54px;height:54px;margin:0 auto 14px;border-radius:8px;background:var(--accent-bg);border:1px solid var(--accent-border);display:flex;align-items:center;justify-content:center;font-size:26px}
+.setup-hero h2{font-family:'Futura','Trebuchet MS',sans-serif;font-size:22px;letter-spacing:0.03em;text-transform:uppercase;margin-bottom:6px}
+.setup-hero p{color:var(--text2);font-size:14px;line-height:1.5}
+.setup-step{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:18px;margin-bottom:14px}
+.setup-step h3{font-size:14px;margin-bottom:6px;display:flex;align-items:center;gap:8px}
+.setup-step .step-num{width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;font-size:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.setup-step p{font-size:13px;color:var(--text2);line-height:1.5;margin-bottom:10px}
+.field-label{font-size:12px;color:var(--text2);margin-bottom:5px;display:block}
+input[type=text],input[type=url],select,textarea{width:100%;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius);padding:11px 12px;color:var(--text);font-size:14px;font-family:inherit}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--accent)}
+.btn{background:var(--surface2);border:1px solid var(--border2);color:var(--text);padding:11px 18px;border-radius:var(--radius);font-size:14px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:8px;justify-content:center}
+.btn:active{background:var(--surface3)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff;width:100%}
+.btn.primary:active{background:#a83e30}
+.btn.full{width:100%}
+.btn.ghost{background:transparent;border-color:var(--border2)}
+.btn.small{padding:7px 12px;font-size:12.5px}
+.btn-google{width:100%;background:#fff;color:#3c4043;border:1px solid #dadce0}
+.btn-google:active{background:#f1f3f4}
+
+/* List */
+.toolbar{padding:12px 18px;display:flex;gap:8px;overflow-x:auto}
+.chip{flex-shrink:0;background:var(--surface2);border:1px solid var(--border2);color:var(--text2);padding:7px 13px;border-radius:20px;font-size:12.5px;cursor:pointer;white-space:nowrap}
+.chip.active{background:var(--accent-bg);border-color:var(--accent-border);color:var(--text)}
+.list{padding:6px 18px 20px}
+.row{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:14px 16px;margin-bottom:10px;cursor:pointer;display:flex;align-items:center;gap:12px}
+.row:active{background:var(--surface2)}
+.row-thumb{width:44px;height:44px;border-radius:8px;background:var(--surface3);flex-shrink:0;object-fit:cover;display:flex;align-items:center;justify-content:center;font-size:18px;color:var(--text3)}
+.row-body{flex:1;min-width:0}
+.row-name{font-weight:700;font-size:15px;margin-bottom:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.row-pills{display:flex;gap:6px;flex-wrap:wrap}
+.pill{font-size:10.5px;font-weight:700;letter-spacing:0.03em;text-transform:uppercase;padding:3px 9px;border-radius:20px;color:#fff;display:inline-block}
+.row-chevron{color:var(--text3);font-size:18px;flex-shrink:0}
+.empty-state{text-align:center;padding:60px 30px;color:var(--text2)}
+.empty-state .em-icon{font-size:38px;margin-bottom:12px;opacity:0.6}
+.empty-state h3{font-size:16px;color:var(--text);margin-bottom:6px}
+.empty-state p{font-size:13px;line-height:1.5}
+
+/* Sync status */
+.sync-bar{padding:8px 18px;font-size:12px;color:var(--text2);display:flex;align-items:center;gap:6px}
+.sync-dot{width:7px;height:7px;border-radius:50%;background:var(--teal)}
+.sync-dot.err{background:var(--accent)}
+
+/* Detail / printable tag */
+.detail-overlay{position:fixed;inset:0;background:var(--bg);z-index:30;overflow-y:auto}
+.detail-bar{position:sticky;top:0;background:var(--bg);border-bottom:1px solid var(--border);padding:14px 16px;display:flex;justify-content:space-between;align-items:center;z-index:2}
+.detail-bar-actions{display:flex;gap:8px}
+
+.tag-wrap{padding:22px 16px 60px;display:flex;justify-content:center}
+.tag-card{background:var(--paper);color:var(--ink);width:100%;max-width:480px;border-radius:4px;position:relative;box-shadow:0 8px 30px rgba(0,0,0,0.35);padding:34px 28px 28px}
+.tag-notch{position:absolute;top:-1px;left:34px;width:26px;height:26px;background:var(--bg);border-radius:0 0 13px 13px}
+.tag-notch::after{content:'';position:absolute;inset:0;margin:auto;width:10px;height:10px;border-radius:50%;background:var(--paper)}
+.tag-kicker{font-size:10.5px;letter-spacing:0.14em;text-transform:uppercase;color:#8a8375;font-weight:700;margin-bottom:6px}
+.tag-name{font-family:'Futura','Trebuchet MS',sans-serif;font-size:28px;font-weight:800;letter-spacing:0.01em;line-height:1.15;margin-bottom:16px;word-break:break-word}
+.tag-pillrow{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:22px}
+.tag-field{border:1px solid #d8d0bd;border-radius:6px;padding:12px 14px;margin-bottom:14px}
+.tag-field-label{font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:#8a8375;font-weight:700;margin-bottom:6px;display:flex;align-items:center;gap:6px}
+.tag-field-value{font-size:14px;line-height:1.55;white-space:pre-wrap;word-break:break-word}
+.tag-field-value.blank-line{border-bottom:1px solid #b8b0a0;height:22px}
+.tag-img{width:100%;border-radius:4px;display:block;margin-top:2px;background:#e5decc;min-height:120px;object-fit:cover}
+.tag-img-missing{width:100%;border-radius:4px;padding:26px;text-align:center;color:#9a9284;font-size:12.5px;border:1px dashed #c9c0ac;margin-top:2px}
+.tag-2col{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.tag-footer{margin-top:6px;font-size:10px;color:#a29a8b;text-align:center;letter-spacing:0.05em}
+
+/* Settings modal */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:40;display:flex;align-items:flex-end}
+.modal-sheet{background:var(--bg);width:100%;max-height:88vh;overflow-y:auto;border-radius:18px 18px 0 0;padding:20px}
+.modal-sheet h2{font-size:17px;margin-bottom:4px}
+.modal-sheet .modal-sub{font-size:12.5px;color:var(--text2);margin-bottom:18px}
+.color-group{margin-bottom:20px}
+.color-group h4{font-size:12px;text-transform:uppercase;letter-spacing:0.05em;color:var(--text2);margin-bottom:10px}
+.color-row{display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid var(--border)}
+.color-row:last-child{border-bottom:none}
+.color-row .cr-label{flex:1;font-size:13.5px}
+.color-swatch{width:34px;height:34px;border-radius:8px;border:1px solid var(--border2);padding:0;cursor:pointer}
+.modal-close-row{display:flex;gap:10px;margin-top:18px;position:sticky;bottom:0;background:var(--bg);padding-top:10px}
+
+/* Toast */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--surface3);border:1px solid var(--border2);color:var(--text);padding:10px 18px;border-radius:24px;font-size:13px;z-index:60;opacity:0;transition:opacity .2s;pointer-events:none}
+.toast.show{opacity:1}
+
+/* Print */
+@media print {
+  body *{visibility:hidden}
+  .tag-card,.tag-card *{visibility:visible}
+  .tag-card{position:absolute;top:0;left:0;box-shadow:none;width:100%;max-width:100%;margin:0}
+  .detail-overlay{position:static;background:#fff}
+  .tag-wrap{padding:0}
+}
+</style>
+</head>
+<body>
+
+<div id="app">
+
+  <!-- SETUP -->
+  <div id="screen-setup" class="setup-wrap hidden">
+    <div class="setup-hero">
+      <div class="tagmark">🏷️</div>
+      <h2>Prototyping Form</h2>
+      <p>Pulls prototype details from your Google Sheet and lays each one out as a printable tag for the props department.</p>
+    </div>
+
+    <div class="setup-step">
+      <h3><span class="step-num">1</span> Connect Google</h3>
+      <p>Your sheet and image folder both live in Google Drive.</p>
+      <button class="btn btn-google" id="btn-google-signin" onclick="signIn()">
+        <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+        Connect Google
+      </button>
+      <div id="setup-signed-in" class="hidden" style="margin-top:10px;font-size:13px;color:var(--teal)">✓ Connected</div>
+    </div>
+
+    <div class="setup-step">
+      <h3><span class="step-num">2</span> Prototype Sheet</h3>
+      <p>Paste the Google Sheet link. First row should be headers: Prototype Name, Category, Priority, Status, Description, Image, Fabricator, Created Date.</p>
+      <label class="field-label">Sheet URL or ID</label>
+      <input type="text" id="input-sheet" placeholder="https://docs.google.com/spreadsheets/d/...">
+    </div>
+
+    <div class="setup-step">
+      <h3><span class="step-num">3</span> Image Folder</h3>
+      <p>The Drive folder holding prop reference photos. Each row's Image column should match a filename in this folder.</p>
+      <label class="field-label">Folder URL or ID</label>
+      <input type="text" id="input-folder" placeholder="https://drive.google.com/drive/folders/...">
+    </div>
+
+    <button class="btn primary full" onclick="saveSetupAndLoad()">Save &amp; load prototypes</button>
+  </div>
+
+  <!-- MAIN -->
+  <div id="screen-main" class="hidden">
+    <div class="topbar">
+      <div>
+        <h1>Prototyping Form</h1>
+        <div class="sub" id="sheet-name-label">&nbsp;</div>
+      </div>
+      <div class="topbar-actions">
+        <button class="icon-btn" onclick="fullSync()" title="Refresh">↻</button>
+        <button class="icon-btn" onclick="openSettings()" title="Settings">⚙</button>
+      </div>
+    </div>
+
+    <div class="sync-bar">
+      <span class="sync-dot" id="sync-dot"></span>
+      <span id="sync-label">Synced</span>
+    </div>
+
+    <div class="toolbar" id="status-filter-row">
+      <div class="chip active" data-f="all" onclick="setFilter('all')">All</div>
+      <div class="chip" data-f="Idea" onclick="setFilter('Idea')">Idea</div>
+      <div class="chip" data-f="In progress" onclick="setFilter('In progress')">In progress</div>
+      <div class="chip" data-f="Completed" onclick="setFilter('Completed')">Completed</div>
+    </div>
+
+    <div class="list" id="list-container"></div>
+  </div>
+
+  <!-- DETAIL / PRINT -->
+  <div id="screen-detail" class="detail-overlay hidden">
+    <div class="detail-bar">
+      <button class="icon-btn" onclick="closeDetail()">←</button>
+      <div class="detail-bar-actions">
+        <button class="btn small" onclick="window.print()">🖨 Print</button>
+      </div>
+    </div>
+    <div class="tag-wrap">
+      <div class="tag-card" id="tag-card"></div>
+    </div>
+  </div>
+
+  <!-- SETTINGS MODAL -->
+  <div id="modal-settings" class="modal-overlay hidden">
+    <div class="modal-sheet">
+      <h2>Settings</h2>
+      <div class="modal-sub">Badge colours, connected sheet &amp; folder</div>
+
+      <div class="color-group">
+        <h4>Category colours</h4>
+        <div id="cg-category"></div>
+      </div>
+      <div class="color-group">
+        <h4>Priority colours</h4>
+        <div id="cg-priority"></div>
+      </div>
+      <div class="color-group">
+        <h4>Status colours</h4>
+        <div id="cg-status"></div>
+      </div>
+
+      <button class="btn ghost full" onclick="resetColors()">Reset colours to default</button>
+
+      <div class="color-group" style="margin-top:22px">
+        <h4>Data source</h4>
+        <label class="field-label">Sheet URL or ID</label>
+        <input type="text" id="settings-sheet" style="margin-bottom:10px">
+        <label class="field-label">Image folder URL or ID</label>
+        <input type="text" id="settings-folder">
+      </div>
+
+      <div class="modal-close-row">
+        <button class="btn ghost full" onclick="closeSettings()">Cancel</button>
+        <button class="btn primary full" onclick="saveSettingsModal()">Save</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<script>
+// ─── CONFIG ─────────────────────────────────────────────────────────────
+const GOOGLE_CLIENT_ID = '93450585738-k7hsn3fjsu69sigcktdfftfcsjk91qcu.apps.googleusercontent.com';
+const SCOPES = [
+  'https://www.googleapis.com/auth/spreadsheets.readonly',
+  'https://www.googleapis.com/auth/drive.readonly',
+  'https://www.googleapis.com/auth/drive.appdata'
+].join(' ');
+const DRIVE_SETTINGS_FILE = 'prototype-form-settings.json';
+
+const DEFAULT_COLORS = {
+  category: {
+    'Ceramics': '#b5674a',
+    'Wood': '#2a4b7c',
+    'Metal': '#6b7785',
+    'Textile': '#7a4fa0',
+    'Paper': '#b3944f',
+    'Paint': '#c15a82',
+    '3D Print': '#3a8f88'
+  },
+  priority: {
+    'High': '#c14a3a',
+    'Medium': '#c48a2e',
+    'Low': '#4a8f6b'
+  },
+  status: {
+    'Idea': '#6b7785',
+    'In progress': '#c48a2e',
+    'Completed': '#4a8f6b'
+  }
+};
+
+const CATEGORY_OPTIONS = ['Ceramics','Wood','Metal','Textile','Paper','Paint','3D Print'];
+const PRIORITY_OPTIONS = ['High','Medium','Low'];
+const STATUS_OPTIONS = ['Idea','In progress','Completed'];
+
+// ─── STATE ──────────────────────────────────────────────────────────────
+let S = {
+  sheetId: null,
+  folderId: null,
+  colors: JSON.parse(JSON.stringify(DEFAULT_COLORS))
+};
+let prototypes = [];
+let currentFilter = 'all';
+let currentDetailRow = null;
+let driveAccessToken = null;
+let settingsFileId = null;
+let imageBlobCache = {}; // driveFileId -> objectURL
+let tokenClient = null;
+
+// ─── INIT ───────────────────────────────────────────────────────────────
+function init() {
+  loadLocalSettings();
+  if (typeof google !== 'undefined' && google.accounts) {
+    initGoogleAuth();
+  } else {
+    window.addEventListener('load', () => setTimeout(initGoogleAuth, 300));
+  }
+  const savedToken = localStorage.getItem('prototag_drive_token');
+  if (savedToken) {
+    driveAccessToken = savedToken;
+  }
+  if (S.sheetId && S.folderId) {
+    showScreen('main');
+    document.getElementById('setup-signed-in').classList.remove('hidden');
+    fullSync();
+  } else {
+    showScreen('setup');
+  }
+}
+
+function loadLocalSettings() {
+  try {
+    const raw = localStorage.getItem('prototag_settings');
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      S.sheetId = parsed.sheetId || null;
+      S.folderId = parsed.folderId || null;
+      if (parsed.colors) S.colors = parsed.colors;
+    }
+  } catch (e) { console.error('loadLocalSettings', e); }
+}
+
+function saveLocalSettings() {
+  localStorage.setItem('prototag_settings', JSON.stringify(S));
+}
+
+function showScreen(name) {
+  document.getElementById('screen-setup').classList.toggle('hidden', name !== 'setup');
+  document.getElementById('screen-main').classList.toggle('hidden', name !== 'main');
+}
+
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+// ─── GOOGLE AUTH ────────────────────────────────────────────────────────
+function initGoogleAuth() {
+  if (typeof google === 'undefined') return;
+  tokenClient = google.accounts.oauth2.initTokenClient({
+    client_id: GOOGLE_CLIENT_ID,
+    scope: SCOPES,
+    callback: async (response) => {
+      if (response.error) { console.error('Auth error:', response.error); toast('Sign-in failed'); return; }
+      driveAccessToken = response.access_token;
+      localStorage.setItem('prototag_drive_token', driveAccessToken);
+      document.getElementById('setup-signed-in').classList.remove('hidden');
+      await pullSettingsFromDrive();
+      toast('Connected');
+      if (S.sheetId) { fullSync(); }
+    }
+  });
+}
+
+function signIn() {
+  if (!tokenClient) { toast('Still loading Google sign-in — try again in a moment'); return; }
+  tokenClient.requestAccessToken({ prompt: driveAccessToken ? '' : 'consent' });
+}
+
+function ensureAuthed() {
+  return new Promise((resolve, reject) => {
+    if (driveAccessToken) { resolve(); return; }
+    if (!tokenClient) { reject(new Error('Google auth not ready')); return; }
+    tokenClient.callback = async (response) => {
+      if (response.error) { reject(response.error); return; }
+      driveAccessToken = response.access_token;
+      localStorage.setItem('prototag_drive_token', driveAccessToken);
+      resolve();
+    };
+    tokenClient.requestAccessToken({ prompt: 'consent' });
+  });
+}
+
+// ─── ID EXTRACTION ──────────────────────────────────────────────────────
+function extractSheetId(input) {
+  if (!input) return null;
+  input = input.trim();
+  const m = input.match(/\/spreadsheets\/d\/([a-zA-Z0-9_-]+)/);
+  if (m) return m[1];
+  if (/^[a-zA-Z0-9_-]{20,}$/.test(input)) return input;
+  return null;
+}
+
+function extractFolderId(input) {
+  if (!input) return null;
+  input = input.trim();
+  const m = input.match(/\/folders\/([a-zA-Z0-9_-]+)/);
+  if (m) return m[1];
+  if (/^[a-zA-Z0-9_-]{20,}$/.test(input)) return input;
+  return null;
+}
+
+// ─── SETUP FLOW ─────────────────────────────────────────────────────────
+async function saveSetupAndLoad() {
+  const sheetRaw = document.getElementById('input-sheet').value;
+  const folderRaw = document.getElementById('input-folder').value;
+  const sheetId = extractSheetId(sheetRaw);
+  const folderId = extractFolderId(folderRaw);
+  if (!driveAccessToken) { toast('Connect Google first'); return; }
+  if (!sheetId) { toast("Couldn't read that sheet link"); return; }
+  if (!folderId) { toast("Couldn't read that folder link"); return; }
+  S.sheetId = sheetId;
+  S.folderId = folderId;
+  saveLocalSettings();
+  await pushSettingsToDrive();
+  showScreen('main');
+  fullSync();
+}
+
+// ─── DRIVE SETTINGS SYNC (appdata) ──────────────────────────────────────
+async function findSettingsFile() {
+  const res = await fetch(`https://www.googleapis.com/drive/v3/files?spaces=appDataFolder&q=name='${DRIVE_SETTINGS_FILE}'&fields=files(id,name)`, {
+    headers: { Authorization: `Bearer ${driveAccessToken}` }
+  });
+  const data = await res.json();
+  if (data.files && data.files.length) { settingsFileId = data.files[0].id; return settingsFileId; }
+  return null;
+}
+
+async function pullSettingsFromDrive() {
+  try {
+    await findSettingsFile();
+    if (!settingsFileId) return;
+    const res = await fetch(`https://www.googleapis.com/drive/v3/files/${settingsFileId}?alt=media`, {
+      headers: { Authorization: `Bearer ${driveAccessToken}` }
+    });
+    if (!res.ok) return;
+    const remote = await res.json();
+    if (remote.sheetId) S.sheetId = remote.sheetId;
+    if (remote.folderId) S.folderId = remote.folderId;
+    if (remote.colors) S.colors = remote.colors;
+    saveLocalSettings();
+  } catch (e) { console.error('pullSettingsFromDrive', e); }
+}
+
+async function pushSettingsToDrive() {
+  try {
+    if (!driveAccessToken) return;
+    const body = JSON.stringify(S);
+    if (!settingsFileId) await findSettingsFile();
+    if (settingsFileId) {
+      await fetch(`https://www.googleapis.com/upload/drive/v3/files/${settingsFileId}?uploadType=media`, {
+        method: 'PATCH',
+        headers: { Authorization: `Bearer ${driveAccessToken}`, 'Content-Type': 'application/json' },
+        body
+      });
+    } else {
+      const metadata = { name: DRIVE_SETTINGS_FILE, parents: ['appDataFolder'] };
+      const form = new FormData();
+      form.append('metadata', new Blob([JSON.stringify(metadata)], { type: 'application/json' }));
+      form.append('file', new Blob([body], { type: 'application/json' }));
+      const res = await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id', {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${driveAccessToken}` },
+        body: form
+      });
+      const data = await res.json();
+      settingsFileId = data.id;
+    }
+  } catch (e) { console.error('pushSettingsToDrive', e); }
+}
+
+// ─── FULL SYNC ──────────────────────────────────────────────────────────
+async function fullSync() {
+  if (!S.sheetId) { showScreen('setup'); return; }
+  setSyncStatus('syncing');
+  try {
+    if (!driveAccessToken) { await ensureAuthed(); }
+    await pullSettingsFromDrive();
+    await fetchSheetData();
+    setSyncStatus('synced');
+  } catch (e) {
+    console.error('fullSync', e);
+    setSyncStatus('error');
+    toast('Sync failed — check your connection');
+  }
+}
+
+function setSyncStatus(state) {
+  const dot = document.getElementById('sync-dot');
+  const label = document.getElementById('sync-label');
+  if (!dot) return;
+  if (state === 'syncing') { label.textContent = 'Syncing…'; dot.classList.remove('err'); }
+  else if (state === 'synced') {
+    const t = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    label.textContent = `Synced ${t}`;
+    dot.classList.remove('err');
+  } else { label.textContent = 'Sync error — tap ↻ to retry'; dot.classList.add('err'); }
+}
+
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible' && S.sheetId && driveAccessToken) {
+    fullSync();
+  }
+});
+
+// ─── SHEETS API ─────────────────────────────────────────────────────────
+const FIELD_ALIASES = {
+  name: ['prototype name', 'name'],
+  category: ['category'],
+  priority: ['priority'],
+  status: ['status'],
+  description: ['description'],
+  image: ['image', 'prototype image', 'image filename'],
+  fabricator: ['fabricator'],
+  createdDate: ['created/start date', 'created date', 'start date', 'created']
+};
+
+function matchHeader(headers) {
+  const lower = headers.map(h => (h || '').trim().toLowerCase());
+  const map = {};
+  Object.keys(FIELD_ALIASES).forEach(key => {
+    const idx = lower.findIndex(h => FIELD_ALIASES[key].includes(h));
+    map[key] = idx;
+  });
+  return map;
+}
+
+async function fetchSheetData() {
+  const res = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${S.sheetId}/values/A1:Z1000`, {
+    headers: { Authorization: `Bearer ${driveAccessToken}` }
+  });
+  if (!res.ok) {
+    if (res.status === 401) { driveAccessToken = null; localStorage.removeItem('prototag_drive_token'); await ensureAuthed(); return fetchSheetData(); }
+    throw new Error('Sheets fetch failed: ' + res.status);
+  }
+  const data = await res.json();
+  const rows = data.values || [];
+  if (!rows.length) { prototypes = []; renderList(); return; }
+  const headers = rows[0];
+  const map = matchHeader(headers);
+  document.getElementById('sheet-name-label').textContent = `${rows.length - 1} prototype${rows.length - 1 === 1 ? '' : 's'} · from your sheet`;
+
+  prototypes = rows.slice(1).filter(r => r.length && r.some(c => (c || '').trim())).map((r, i) => ({
+    rowIndex: i,
+    name: map.name > -1 ? (r[map.name] || '').trim() : '',
+    category: map.category > -1 ? (r[map.category] || '').trim() : '',
+    priority: map.priority > -1 ? (r[map.priority] || '').trim() : '',
+    status: map.status > -1 ? (r[map.status] || '').trim() : '',
+    description: map.description > -1 ? (r[map.description] || '').trim() : '',
+    imageFilename: map.image > -1 ? (r[map.image] || '').trim() : '',
+    fabricator: map.fabricator > -1 ? (r[map.fabricator] || '').trim() : '',
+    createdDate: map.createdDate > -1 ? (r[map.createdDate] || '').trim() : ''
+  })).filter(p => p.name);
+
+  renderList();
+}
+
+// ─── DRIVE IMAGE LOOKUP ─────────────────────────────────────────────────
+async function findImageFile(filename) {
+  if (!filename || !S.folderId) return null;
+  const bareName = filename.replace(/\.[^/.]+$/, '');
+  const q = encodeURIComponent(`'${S.folderId}' in parents and (name contains '${bareName.replace(/'/g, "\\'")}') and trashed = false`);
+  const res = await fetch(`https://www.googleapis.com/drive/v3/files?q=${q}&fields=files(id,name,mimeType)&pageSize=5`, {
+    headers: { Authorization: `Bearer ${driveAccessToken}` }
+  });
+  if (!res.ok) return null;
+  const data = await res.json();
+  if (data.files && data.files.length) return data.files[0];
+  return null;
+}
+
+async function loadImageForRow(row, imgEl, missingEl) {
+  if (!row.imageFilename) { missingEl.classList.remove('hidden'); imgEl.classList.add('hidden'); return; }
+  try {
+    const file = await findImageFile(row.imageFilename);
+    if (!file) { missingEl.textContent = `No match found for "${row.imageFilename}" in the image folder`; missingEl.classList.remove('hidden'); imgEl.classList.add('hidden'); return; }
+    if (imageBlobCache[file.id]) { imgEl.src = imageBlobCache[file.id]; imgEl.classList.remove('hidden'); missingEl.classList.add('hidden'); return; }
+    const res = await fetch(`https://www.googleapis.com/drive/v3/files/${file.id}?alt=media`, {
+      headers: { Authorization: `Bearer ${driveAccessToken}` }
+    });
+    if (!res.ok) throw new Error('image fetch failed');
+    const blob = await res.blob();
+    const url = URL.createObjectURL(blob);
+    imageBlobCache[file.id] = url;
+    imgEl.src = url;
+    imgEl.classList.remove('hidden');
+    missingEl.classList.add('hidden');
+  } catch (e) {
+    console.error('loadImageForRow', e);
+    missingEl.textContent = 'Image failed to load';
+    missingEl.classList.remove('hidden');
+    imgEl.classList.add('hidden');
+  }
+}
+
+// ─── COLOR HELPERS ──────────────────────────────────────────────────────
+function colorFor(group, value) {
+  if (!value) return '#8a8375';
+  return (S.colors[group] && S.colors[group][value]) || '#6b7785';
+}
+
+function pillHtml(group, value) {
+  if (!value) return '';
+  const c = colorFor(group, value);
+  return `<span class="pill" style="background:${c}">${escapeHtml(value)}</span>`;
+}
+
+function escapeHtml(str) {
+  const d = document.createElement('div');
+  d.textContent = str == null ? '' : str;
+  return d.innerHTML;
+}
+
+// ─── LIST VIEW ──────────────────────────────────────────────────────────
+function setFilter(f) {
+  currentFilter = f;
+  document.querySelectorAll('#status-filter-row .chip').forEach(c => c.classList.toggle('active', c.dataset.f === f));
+  renderList();
+}
+
+function renderList() {
+  const container = document.getElementById('list-container');
+  const filtered = currentFilter === 'all' ? prototypes : prototypes.filter(p => p.status === currentFilter);
+
+  if (!prototypes.length) {
+    container.innerHTML = `<div class="empty-state"><div class="em-icon">🏷️</div><h3>No prototypes yet</h3><p>Add rows to your Google Sheet and tap ↻ to refresh.</p></div>`;
+    return;
+  }
+  if (!filtered.length) {
+    container.innerHTML = `<div class="empty-state"><div class="em-icon">🔍</div><h3>Nothing here</h3><p>No prototypes with that status.</p></div>`;
+    return;
+  }
+
+  container.innerHTML = filtered.map(p => `
+    <div class="row" onclick="openDetail(${p.rowIndex})">
+      <div class="row-thumb">${p.category ? categoryEmoji(p.category) : '🏷️'}</div>
+      <div class="row-body">
+        <div class="row-name">${escapeHtml(p.name)}</div>
+        <div class="row-pills">${pillHtml('status', p.status)}${pillHtml('priority', p.priority)}</div>
+      </div>
+      <div class="row-chevron">›</div>
+    </div>
+  `).join('');
+}
+
+function categoryEmoji(cat) {
+  const map = { 'Ceramics': '🏺', 'Wood': '🪵', 'Metal': '⚙️', 'Textile': '🧵', 'Paper': '📄', 'Paint': '🎨', '3D Print': '🖨️' };
+  return map[cat] || '🏷️';
+}
+
+// ─── DETAIL / PRINT VIEW ────────────────────────────────────────────────
+function openDetail(rowIndex) {
+  const row = prototypes.find(p => p.rowIndex === rowIndex);
+  if (!row) return;
+  currentDetailRow = row;
+  renderDetail(row);
+  document.getElementById('screen-detail').classList.remove('hidden');
+}
+
+function closeDetail() {
+  document.getElementById('screen-detail').classList.add('hidden');
+  currentDetailRow = null;
+}
+
+function renderDetail(row) {
+  const card = document.getElementById('tag-card');
+  card.innerHTML = `
+    <div class="tag-notch"></div>
+    <div class="tag-kicker">Prototyping Form</div>
+    <div class="tag-name">${escapeHtml(row.name)}</div>
+    <div class="tag-pillrow">${pillHtml('category', row.category)}${pillHtml('priority', row.priority)}${pillHtml('status', row.status)}</div>
+
+    <div class="tag-field">
+      <div class="tag-field-label">Description</div>
+      <div class="tag-field-value">${escapeHtml(row.description) || '—'}</div>
+    </div>
+
+    <div class="tag-field">
+      <div class="tag-field-label">Reference image</div>
+      <img class="tag-img hidden" id="tag-img-el" alt="${escapeHtml(row.name)}">
+      <div class="tag-img-missing hidden" id="tag-img-missing">Loading image…</div>
+    </div>
+
+    <div class="tag-field">
+      <div class="tag-field-label">Fabricator</div>
+      <div class="tag-field-value">${escapeHtml(row.fabricator) || '—'}</div>
+    </div>
+
+    <div class="tag-2col">
+      <div class="tag-field">
+        <div class="tag-field-label">Created / start date</div>
+        <div class="tag-field-value">${escapeHtml(row.createdDate) || '—'}</div>
+      </div>
+      <div class="tag-field">
+        <div class="tag-field-label">Completed date</div>
+        <div class="tag-field-value blank-line"></div>
+      </div>
+    </div>
+
+    <div class="tag-footer">FOR PROPS DEPARTMENT USE</div>
+  `;
+  const imgEl = document.getElementById('tag-img-el');
+  const missingEl = document.getElementById('tag-img-missing');
+  missingEl.classList.remove('hidden');
+  missingEl.textContent = 'Loading image…';
+  loadImageForRow(row, imgEl, missingEl);
+}
+
+// ─── SETTINGS MODAL ─────────────────────────────────────────────────────
+function openSettings() {
+  document.getElementById('settings-sheet').value = S.sheetId || '';
+  document.getElementById('settings-folder').value = S.folderId || '';
+  renderColorGroup('cg-category', 'category', CATEGORY_OPTIONS);
+  renderColorGroup('cg-priority', 'priority', PRIORITY_OPTIONS);
+  renderColorGroup('cg-status', 'status', STATUS_OPTIONS);
+  document.getElementById('modal-settings').classList.remove('hidden');
+}
+
+function closeSettings() {
+  document.getElementById('modal-settings').classList.add('hidden');
+}
+
+function renderColorGroup(containerId, group, options) {
+  const el = document.getElementById(containerId);
+  el.innerHTML = options.map(opt => `
+    <div class="color-row">
+      <div class="cr-label">${escapeHtml(opt)}</div>
+      <input type="color" class="color-swatch" value="${colorFor(group, opt)}" onchange="setColor('${group}','${opt.replace(/'/g, "\\'")}', this.value)">
+    </div>
+  `).join('');
+}
+
+function setColor(group, value, hex) {
+  if (!S.colors[group]) S.colors[group] = {};
+  S.colors[group][value] = hex;
+  saveLocalSettings();
+  renderList();
+  if (currentDetailRow) renderDetail(currentDetailRow);
+}
+
+function resetColors() {
+  S.colors = JSON.parse(JSON.stringify(DEFAULT_COLORS));
+  saveLocalSettings();
+  renderColorGroup('cg-category', 'category', CATEGORY_OPTIONS);
+  renderColorGroup('cg-priority', 'priority', PRIORITY_OPTIONS);
+  renderColorGroup('cg-status', 'status', STATUS_OPTIONS);
+  renderList();
+  toast('Colours reset');
+}
+
+async function saveSettingsModal() {
+  const sheetId = extractSheetId(document.getElementById('settings-sheet').value);
+  const folderId = extractFolderId(document.getElementById('settings-folder').value);
+  if (sheetId) S.sheetId = sheetId;
+  if (folderId) S.folderId = folderId;
+  saveLocalSettings();
+  await pushSettingsToDrive();
+  closeSettings();
+  toast('Settings saved');
+  fullSync();
+}
+
+// ─── BOOT ───────────────────────────────────────────────────────────────
+init();
+</script>
+</body>
+</html>
