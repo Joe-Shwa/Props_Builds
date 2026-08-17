@@ -554,7 +554,12 @@ async function fetchSheetData() {
   }
   const data = await res.json();
   const rows = data.values || [];
-  if (!rows.length) { prototypes = []; renderList(); return; }
+  if (!rows.length) {
+    prototypes = [];
+    document.getElementById('sheet-name-label').textContent = 'Connected · sheet is empty';
+    renderList();
+    return;
+  }
   const headers = rows[0];
   const map = matchHeader(headers);
   document.getElementById('sheet-name-label').textContent = `${rows.length - 1} prototype${rows.length - 1 === 1 ? '' : 's'} · from your sheet`;
@@ -590,7 +595,7 @@ async function findImageFile(filename) {
 }
 
 async function loadImageForRow(row, imgEl, missingEl) {
-  if (!row.imageFilename) { missingEl.classList.remove('hidden'); imgEl.classList.add('hidden'); return; }
+  if (!row.imageFilename) { missingEl.textContent = 'No image set for this prototype'; missingEl.classList.remove('hidden'); imgEl.classList.add('hidden'); return; }
   try {
     const file = await findImageFile(row.imageFilename);
     if (!file) { missingEl.textContent = `No match found for "${row.imageFilename}" in the image folder`; missingEl.classList.remove('hidden'); imgEl.classList.add('hidden'); return; }
