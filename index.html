@@ -530,7 +530,8 @@ const FIELD_ALIASES = {
   description: ['description'],
   image: ['image', 'prototype image', 'image filename'],
   fabricator: ['fabricator'],
-  createdDate: ['created/start date', 'created date', 'start date', 'created']
+  createdDate: ['submission date', 'created/start date', 'created date', 'start date', 'created'],
+  completedDate: ['completed date', 'completion date', 'completed']
 };
 
 function matchHeader(headers) {
@@ -567,7 +568,8 @@ async function fetchSheetData() {
     description: map.description > -1 ? (r[map.description] || '').trim() : '',
     imageFilename: map.image > -1 ? (r[map.image] || '').trim() : '',
     fabricator: map.fabricator > -1 ? (r[map.fabricator] || '').trim() : '',
-    createdDate: map.createdDate > -1 ? (r[map.createdDate] || '').trim() : ''
+    createdDate: map.createdDate > -1 ? (r[map.createdDate] || '').trim() : '',
+    completedDate: map.completedDate > -1 ? (r[map.completedDate] || '').trim() : ''
   })).filter(p => p.name);
 
   renderList();
@@ -686,7 +688,7 @@ function renderDetail(row) {
     <div class="tag-notch"></div>
     <div class="tag-kicker">Prototyping Form</div>
     <div class="tag-name">${escapeHtml(row.name)}</div>
-    <div class="tag-pillrow">${pillHtml('category', row.category)}${pillHtml('priority', row.priority)}${pillHtml('status', row.status)}</div>
+    <div class="tag-pillrow">${pillHtml('category', row.category)}${pillHtml('priority', row.priority)}</div>
 
     <div class="tag-field">
       <div class="tag-field-label">Description</div>
@@ -706,12 +708,14 @@ function renderDetail(row) {
 
     <div class="tag-2col">
       <div class="tag-field">
-        <div class="tag-field-label">Created / start date</div>
+        <div class="tag-field-label">Submission date</div>
         <div class="tag-field-value">${escapeHtml(row.createdDate) || '—'}</div>
       </div>
       <div class="tag-field">
         <div class="tag-field-label">Completed date</div>
-        <div class="tag-field-value blank-line"></div>
+        ${row.completedDate
+          ? `<div class="tag-field-value">${escapeHtml(row.completedDate)}</div>`
+          : `<div class="tag-field-value blank-line"></div>`}
       </div>
     </div>
 
