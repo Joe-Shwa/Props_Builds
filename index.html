@@ -104,7 +104,9 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--accent)}
 .tag-notch::after{content:'';position:absolute;inset:0;margin:auto;width:10px;height:10px;border-radius:50%;background:var(--paper)}
 .tag-kicker{font-size:10.5px;letter-spacing:0.14em;text-transform:uppercase;color:#8a8375;font-weight:700;margin-bottom:6px}
 .tag-name{font-family:'Futura','Trebuchet MS',sans-serif;font-size:28px;font-weight:800;letter-spacing:0.01em;line-height:1.15;margin-bottom:16px;word-break:break-word}
-.tag-pillrow{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:22px}
+.tag-pillrow{display:flex;gap:18px;flex-wrap:wrap;margin-bottom:22px;align-items:flex-start}
+.tag-pill-item{display:flex;flex-direction:column;gap:5px}
+.tag-pill-caption{font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:#8a8375;font-weight:700}
 .tag-field{border:1px solid #d8d0bd;border-radius:6px;padding:12px 14px;margin-bottom:14px}
 .tag-field-label{font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:#8a8375;font-weight:700;margin-bottom:6px;display:flex;align-items:center;gap:6px}
 .tag-field-value{font-size:14px;line-height:1.55;white-space:pre-wrap;word-break:break-word}
@@ -499,7 +501,7 @@ async function fullSync() {
   } catch (e) {
     console.error('fullSync', e);
     setSyncStatus('error');
-    toast('Sync failed — check your connection');
+    toast(e && e.message ? e.message : 'Sync failed — check your connection');
   }
 }
 
@@ -550,7 +552,9 @@ async function fetchSheetData() {
   });
   if (!res.ok) {
     if (res.status === 401) { driveAccessToken = null; localStorage.removeItem('prototag_drive_token'); await ensureAuthed(); return fetchSheetData(); }
-    throw new Error('Sheets fetch failed: ' + res.status);
+    let detail = `HTTP ${res.status}`;
+    try { const errJson = await res.json(); if (errJson.error && errJson.error.message) detail = errJson.error.message; } catch (e) {}
+    throw new Error('Sheets fetch failed: ' + detail);
   }
   const data = await res.json();
   const rows = data.values || [];
@@ -693,7 +697,16 @@ function renderDetail(row) {
     <div class="tag-notch"></div>
     <div class="tag-kicker">Prototyping Form</div>
     <div class="tag-name">${escapeHtml(row.name)}</div>
-    <div class="tag-pillrow">${pillHtml('category', row.category)}${pillHtml('priority', row.priority)}</div>
+    <div class="tag-pillrow">
+      <div class="tag-pill-item">
+        <div class="tag-pill-caption">Category</div>
+        ${pillHtml('category', row.category)}
+      </div>
+      <div class="tag-pill-item">
+        <div class="tag-pill-caption">Priority</div>
+        ${pillHtml('priority', row.priority)}
+      </div>
+    </div>
 
     <div class="tag-field">
       <div class="tag-field-label">Description</div>
