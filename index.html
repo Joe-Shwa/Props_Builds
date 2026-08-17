@@ -792,6 +792,10 @@ function renderDetail(row) {
         <div class="tag-pill-caption">Priority</div>
         ${pillHtml('priority', row.priority)}
       </div>
+      <div class="tag-pill-item">
+        <div class="tag-pill-caption">Due Date</div>
+        <span class="pill" style="background:#3a3630">${escapeHtml(row.dueDate) || '—'}</span>
+      </div>
     </div>
 
     <div class="tag-field">
@@ -810,15 +814,9 @@ function renderDetail(row) {
       <div class="tag-field-value">${escapeHtml(row.fabricator) || '—'}</div>
     </div>
 
-    <div class="tag-2col">
-      <div class="tag-field">
-        <div class="tag-field-label">Submission date</div>
-        <div class="tag-field-value">${escapeHtml(row.createdDate) || '—'}</div>
-      </div>
-      <div class="tag-field">
-        <div class="tag-field-label">Due date</div>
-        <div class="tag-field-value">${escapeHtml(row.dueDate) || '—'}</div>
-      </div>
+    <div class="tag-field">
+      <div class="tag-field-label">Submission date</div>
+      <div class="tag-field-value">${escapeHtml(row.createdDate) || '—'}</div>
     </div>
 
     <div class="tag-field">
