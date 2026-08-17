@@ -135,11 +135,18 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--accent)}
 
 /* Print */
 @media print {
+  @page { size: A4; margin: 12mm; }
   body *{visibility:hidden}
   .tag-card,.tag-card *{visibility:visible}
-  .tag-card{position:absolute;top:0;left:0;box-shadow:none;width:100%;max-width:100%;margin:0}
+  .tag-card{position:absolute;top:0;left:0;box-shadow:none;width:100%;max-width:100%;margin:0;padding:16px 18px 18px}
   .detail-overlay{position:static;background:#fff}
   .tag-wrap{padding:0}
+  .tag-name{font-size:23px;margin-bottom:10px}
+  .tag-pillrow{margin-bottom:14px}
+  .tag-field{padding:9px 12px;margin-bottom:9px}
+  .tag-field-value{font-size:13px;line-height:1.4}
+  .tag-img{width:180mm;height:120mm;max-width:100%;object-fit:cover;margin:2px auto 0;display:block}
+  .tag-img-missing{padding:14px}
 }
 </style>
 </head>
@@ -589,6 +596,7 @@ const FIELD_ALIASES = {
   name: ['prototype name', 'name'],
   category: ['category'],
   priority: ['priority'],
+  dueDate: ['due date'],
   status: ['status'],
   description: ['description'],
   image: ['image', 'prototype image', 'image filename'],
@@ -634,6 +642,7 @@ async function fetchSheetData() {
     name: map.name > -1 ? (r[map.name] || '').trim() : '',
     category: map.category > -1 ? (r[map.category] || '').trim() : '',
     priority: map.priority > -1 ? (r[map.priority] || '').trim() : '',
+    dueDate: map.dueDate > -1 ? (r[map.dueDate] || '').trim() : '',
     status: map.status > -1 ? (r[map.status] || '').trim() : '',
     description: map.description > -1 ? (r[map.description] || '').trim() : '',
     imageFilename: map.image > -1 ? (r[map.image] || '').trim() : '',
@@ -804,11 +813,16 @@ function renderDetail(row) {
         <div class="tag-field-value">${escapeHtml(row.createdDate) || '—'}</div>
       </div>
       <div class="tag-field">
-        <div class="tag-field-label">Completed date</div>
-        ${row.completedDate
-          ? `<div class="tag-field-value">${escapeHtml(row.completedDate)}</div>`
-          : `<div class="tag-field-value blank-line"></div>`}
+        <div class="tag-field-label">Due date</div>
+        <div class="tag-field-value">${escapeHtml(row.dueDate) || '—'}</div>
       </div>
+    </div>
+
+    <div class="tag-field">
+      <div class="tag-field-label">Completed date</div>
+      ${row.completedDate
+        ? `<div class="tag-field-value">${escapeHtml(row.completedDate)}</div>`
+        : `<div class="tag-field-value blank-line"></div>`}
     </div>
 
     <div class="tag-footer">FOR PROPS DEPARTMENT USE</div>
