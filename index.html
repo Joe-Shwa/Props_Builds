@@ -419,6 +419,21 @@ function extractFolderId(input) {
   return null;
 }
 
+function extractDriveFileId(input) {
+  if (!input) return null;
+  input = input.trim();
+  const patterns = [
+    /\/file\/d\/([a-zA-Z0-9_-]+)/,   // .../file/d/FILE_ID/view
+    /\/d\/([a-zA-Z0-9_-]+)/,          // .../d/FILE_ID
+    /[?&]id=([a-zA-Z0-9_-]+)/         // ...?id=FILE_ID (open/uc links)
+  ];
+  for (const p of patterns) {
+    const m = input.match(p);
+    if (m) return m[1];
+  }
+  return null;
+}
+
 // ─── SETUP FLOW ─────────────────────────────────────────────────────────
 async function saveSetupAndLoad() {
   const sheetRaw = document.getElementById('input-sheet').value;
@@ -601,13 +616,23 @@ async function findImageFile(filename) {
 async function loadImageForRow(row, imgEl, missingEl) {
   if (!row.imageFilename) { missingEl.textContent = 'No image set for this prototype'; missingEl.classList.remove('hidden'); imgEl.classList.add('hidden'); return; }
   try {
-    const file = await findImageFile(row.imageFilename);
+    let file = null;
+    const directId = extractDriveFileId(row.imageFilename);
+    if (directId) {
+      file = { id: directId };
+    } else {
+      file = await findImageFile(row.imageFilename);
+    }
     if (!file) { missingEl.textContent = `No match found for "${row.imageFilename}" in the image folder`; missingEl.classList.remove('hidden'); imgEl.classList.add('hidden'); return; }
     if (imageBlobCache[file.id]) { imgEl.src = imageBlobCache[file.id]; imgEl.classList.remove('hidden'); missingEl.classList.add('hidden'); return; }
     const res = await fetch(`https://www.googleapis.com/drive/v3/files/${file.id}?alt=media`, {
       headers: { Authorization: `Bearer ${driveAccessToken}` }
     });
-    if (!res.ok) throw new Error('image fetch failed');
+    if (!res.ok) {
+      if (directId) { missingEl.textContent = 'Could not open that Drive link — check it\'s shared with the connected account'; }
+      else { missingEl.textContent = 'Image failed to load'; }
+      missingEl.classList.remove('hidden'); imgEl.classList.add('hidden'); return;
+    }
     const blob = await res.blob();
     const url = URL.createObjectURL(blob);
     imageBlobCache[file.id] = url;
