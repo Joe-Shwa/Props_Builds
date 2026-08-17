@@ -629,8 +629,11 @@ async function loadImageForRow(row, imgEl, missingEl) {
       headers: { Authorization: `Bearer ${driveAccessToken}` }
     });
     if (!res.ok) {
-      if (directId) { missingEl.textContent = 'Could not open that Drive link — check it\'s shared with the connected account'; }
-      else { missingEl.textContent = 'Image failed to load'; }
+      let detail = `HTTP ${res.status}`;
+      try { const errJson = await res.json(); if (errJson.error && errJson.error.message) detail = errJson.error.message; } catch (e) {}
+      console.error('Drive image fetch failed:', res.status, detail);
+      if (directId) { missingEl.textContent = `Could not open that Drive link (${detail}) — check it's shared with the connected account`; }
+      else { missingEl.textContent = `Image failed to load (${detail})`; }
       missingEl.classList.remove('hidden'); imgEl.classList.add('hidden'); return;
     }
     const blob = await res.blob();
